@@ -52,8 +52,8 @@ class App extends React.Component {
 
     console.log(requestOptions);
 
-    fetch("http://localhost:5551/search", requestOptions)
-      .then(response => console.log(response))
+    fetch("http://scox.europa.renci.org:5551/search", requestOptions)
+      .then(response => response.json())
       .then(data => this.setState({results: data}))
       .catch(error => console.log(error));
   }

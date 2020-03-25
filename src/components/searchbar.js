@@ -6,7 +6,6 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div className="search">
-        <form>
           <input
             type="text"
             id="searchBar"
@@ -22,7 +21,6 @@ class SearchBar extends React.Component {
           >
             Submit
           </button>
-        </form>
       </div>
     );
   }

@@ -9,22 +9,34 @@ export default class ExpandedResult extends React.Component {
   */
 
   render() {
+    if (!this.props.data) {
+        return(<div />)
+    }
+
     return (
       <div className="expanded">
-        <h1 id="expandedTitle">{this.props.data.label}</h1>
-        <p>
-          This is where the description of the phenotype will go. Right now this
-          text is here because I don't feel like copying the standard latin
-          stuff that people always use for placeholders. I feel like this is
-          more "me" anyway.
-        </p>
-        <h2>Connections</h2>
-        <ul>
-          <li>Phenotypes</li>
-          <li>Genes</li>
-          <li>Genotypes</li>
-          <li>Diesease</li>
-        </ul>
+        {this.props.data._source.study && (
+          <div>
+            <h1 id="expandedTitle">{this.props.data._source.name[0]}</h1>
+            <h2>{this.props.data._id}</h2>
+            <h3>Study:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{this.props.data._source.study}</h3>
+            <h3>Tag:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{this.props.data._source.tag}</h3>
+            <h3>Var:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{this.props.data._source.var}</h3>
+
+            <section id="description">
+              <h2 id="descriptionTitle">Description</h2>
+              <ul id="descriptionList">
+                {this.props.data._source.name.length > 1 &&
+                  this.props.data._source.name.map((item, index) => {
+                    if (index > 0) {
+                      return(<li key={index}>{item}</li>)
+                    }
+                  })
+                }
+              </ul>
+            </section>
+          </div>
+        )}
       </div>
     );
   }

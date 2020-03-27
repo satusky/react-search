@@ -4,9 +4,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-### The node modules are not included in thie repo. You need to run 
+The node modules are not included in this repo. You need to run 
 ### `npm install`
-### to get the node modules
+to get the node modules
 
 ### `npm start`
 

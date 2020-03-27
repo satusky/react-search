@@ -32,6 +32,10 @@ h1 {
   text-align: left;
 }
 
+h2 {
+  text-align: left;
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -59,5 +63,6 @@ tr:nth-child(even) {
   padding: 50px;
   justify-self: center;
   margin-top: 40px;
-  position: fixed;
+  
 }
+

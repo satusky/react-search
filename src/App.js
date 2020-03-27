@@ -1,4 +1,3 @@
-//import React, { Component } from 'react';
 import React from "react";
 import { Container, Row, Col } from "react-grid-system";
 import SearchBar from "./components/searchbar";
@@ -16,11 +15,18 @@ class App extends React.Component {
       },
       rows: 500,
       start: 0,
-      results: [],
-      indexToExpand: [],
-      resultToExpand: [],
-      postId: ""
+      results: {
+          status: "",
+          hits: [],
+          message: ""
+        },
+      indexToExpand: null,
+      resultToExpand: null,
+      postId: "",
+      resultsReturned: false,
+      requestSubmitted: false
     };
+
     this.handleSelect = this.handleSelect.bind(this);
     this.toDisplay = this.toDisplay.bind(this);
   }
@@ -33,15 +39,23 @@ class App extends React.Component {
       }
     });
     console.log(this.state.query.query);
-    //console.log(this.state.query);
   }
   
   handleSubmit(event) {
     this.setState({ 
-        query: {
-          index: "test", 
-          query: `${event.target.value}`
-        }
+      query: {
+        index: "test", 
+        query: `${event.target.value}`
+      },
+      results: {
+        status: "",
+        hits: [],
+        message: ""
+      },
+      indexToExpand: null,
+      resultToExpand: null,
+      resultsReturned: false,
+      requestSubmitted: false
     });
     
     const requestOptions = {
@@ -52,40 +66,72 @@ class App extends React.Component {
 
     console.log(requestOptions);
 
-    fetch("http://scox.europa.renci.org:5551/search", requestOptions)
+    fetch("http://search.helx-dev.renci.org:5551/search", requestOptions)
       .then(response => response.json())
-      .then(data => this.setState({results: data}))
+      .then(data => this.setState({
+          results: {
+            status: data.status,
+            hits: data.result.hits.hits,
+            message: data.message
+          }
+        }))
       .catch(error => console.log(error));
+
+    this.setState({requestSubmitted: true});
   }
-   
+
+  componentDidUpdate() {
+    if (!this.state.resultsReturned && this.state.results.hits) {
+      for (var i = 0; i < Object.keys(this.state.results.hits).length; i++) {
+        if (this.state.results.hits[i]._source.study) {
+          this.setState({resultsReturned: true});
+          console.log(this.state.resultsReturned);
+          break
+        }
+      };
+    }
+  }
+  
   renderTableData() {
-    return this.state.results.map((listing, index) => {
-      return (
-        <tr
-          key={listing.id}
-          data-item={listing.id}
-          onClick={e => this.handleSelect(e)}
-        >
-          <td data-item={listing.id} data-index={index}>
-            {listing.label}
-          </td>
-        </tr>
-      );
-    });
+    if (!this.state.requestSubmitted) {
+      return(<div />)
+    }
+    
+    return (
+        this.state.results.hits.map((listing, index) => {
+          return (
+            (listing._source.study) && (
+              <tr
+                key={index}
+                data-item={listing._id}
+                onClick={e => this.handleSelect(e)}
+              >
+                <td data-item={listing._id} data-index={index}>
+                  {listing._source.name[0]}
+                </td>
+              </tr>
+            )
+          );
+      })
+    )
+
   }
+  
 
   handleSelect(e) {
     let selectedIndex = e.target.getAttribute("data-index");
-    //let selectedResultId = e.target.getAttribute('data-item');
     this.setState({
       indexToExpand: selectedIndex,
-      resultToExpand: this.state.results[selectedIndex]
+      resultToExpand: this.state.results.hits[selectedIndex]
     });
     e.preventDefault();
   }
 
   toDisplay() {
+    console.log(this.state.results.hits);
     console.log(this.state.resultToExpand);
+    console.log(this.state.resultsReturned);
+    console.log(Object.keys(this.state.results.hits).length);
   }
 
   render() {
@@ -103,10 +149,15 @@ class App extends React.Component {
             </Row>
             <Row>
               <Col>
+
                 <ResultsTable
+                  id="results"
                   className={styles.results}
                   onChange={this.renderTableData()}
                 />
+                { this.state.requestSubmitted && !this.state.resultsReturned &&
+                  <h2>No variables found</h2>
+                }
               </Col>
               <Col>
                 <ExpandedResult

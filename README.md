@@ -4,6 +4,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+## The node modules are not included in thie repo. You need to run npm intall to get the node modules
+
 ### `npm start`
 
 Runs the app in the development mode.<br />

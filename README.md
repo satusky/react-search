@@ -5,8 +5,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the project directory, you can run:
 
 The node modules are not included in this repo. To get node modules:
-```cd react-search'
-npm install```
+```
+cd react-search
+npm install
+```
 
 
 ### `npm start`

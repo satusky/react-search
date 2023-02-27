@@ -1,3 +1,4 @@
+# Barebones DUG search interface mockup
 
 The node modules are not included in this repo. To get node modules:
 ```
